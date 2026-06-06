@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GEIP Company Analysis — John Ray</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: oklch(18% 0.02 250);
+    --paper: oklch(97% 0.008 75);
+    --warm-mid: oklch(88% 0.012 75);
+    --accent: oklch(48% 0.15 30);
+    --accent-light: oklch(92% 0.04 30);
+    --muted: oklch(55% 0.012 250);
+    --rule: oklch(80% 0.01 75);
+    --tag-bg: oklch(94% 0.02 250);
+
+    --s-fit-high: oklch(38% 0.14 145);
+    --s-fit-mid: oklch(55% 0.12 55);
+    --s-fit-low: oklch(55% 0.08 250);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+
+  /* ── HEADER ── */
+  header {
+    padding: clamp(2.5rem, 6vw, 5rem) clamp(1.5rem, 8vw, 6rem) 2rem;
+    border-bottom: 2px solid var(--ink);
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    gap: 1rem;
+  }
+
+  .header-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.75rem;
+  }
+
+  .header-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.4rem);
+    line-height: 1.15;
+    font-weight: 700;
+  }
+
+  .header-title em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .header-meta {
+    text-align: right;
+    font-size: 0.78rem;
+    color: var(--muted);
+    line-height: 1.8;
+  }
+
+  /* ── INTRO ── */
+  .intro-band {
+    padding: 2.5rem clamp(1.5rem, 8vw, 6rem);
+    background: var(--warm-mid);
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .intro-band p {
+    max-width: 72ch;
+    font-size: 0.95rem;
+    color: oklch(30% 0.02 250);
+    line-height: 1.8;
+  }
+
+  /* ── LEGEND ── */
+  .legend {
+    padding: 1.2rem clamp(1.5rem, 8vw, 6rem);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    border-bottom: 1px solid var(--rule);
+    font-size: 0.78rem;
+  }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--muted);
+  }
+
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .dot.high { background: var(--s-fit-high); }
+  .dot.mid  { background: var(--s-fit-mid); }
+  .dot.low  { background: var(--s-fit-low); }
+
+  /* ── MAIN ── */
+  main {
+    padding: 0 clamp(1.5rem, 8vw, 6rem) 6rem;
+  }
+
+  /* ── TIER HEADING ── */
+  .tier {
+    margin-top: 4rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1.5px solid var(--ink);
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+  }
+
+  .tier-label {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    font-weight: 700;
+  }
+
+  .tier-subtitle {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-style: italic;
+  }
+
+  /* ── CARD ── */
+  .card {
+    margin: 2.5rem 0;
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 0 3rem;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 2.5rem;
+  }
+
+  @media (max-width: 700px) {
+    .card { grid-template-columns: 1fr; gap: 1.5rem; }
+    header { grid-template-columns: 1fr; }
+    .header-meta { text-align: left; }
+  }
+
+  .card-sidebar {
+    padding-top: 0.15rem;
+  }
+
+  .company-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 0.5rem;
+  }
+
+  .company-tag {
+    display: inline-block;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    background: var(--tag-bg);
+    border: 1px solid var(--rule);
+    border-radius: 2px;
+    padding: 0.2em 0.55em;
+    margin: 0.15rem 0.15rem 0.15rem 0;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+  }
+
+  .fit-badge {
+    margin-top: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .fit-badge .dot { width: 9px; height: 9px; }
+
+  .fit-text.high { color: var(--s-fit-high); }
+  .fit-text.mid  { color: var(--s-fit-mid); }
+  .fit-text.low  { color: var(--s-fit-low); }
+
+  .location {
+    margin-top: 0.8rem;
+    font-size: 0.75rem;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+
+  /* ── CARD BODY ── */
+  .card-body > * + * { margin-top: 1.1rem; }
+
+  .company-lead {
+    font-size: 0.9rem;
+    color: oklch(35% 0.02 250);
+    font-style: italic;
+    padding-left: 0.9rem;
+    border-left: 3px solid var(--accent);
+    line-height: 1.7;
+  }
+
+  .section-head {
+    font-size: 0.65rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 0.3rem;
+    font-weight: 500;
+  }
+
+  .card-body p {
+    font-size: 0.88rem;
+    line-height: 1.8;
+  }
+
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+    margin-top: 0.6rem;
+  }
+
+  .pill {
+    font-size: 0.7rem;
+    padding: 0.25em 0.7em;
+    border-radius: 999px;
+    border: 1px solid var(--rule);
+    color: var(--muted);
+    background: transparent;
+  }
+
+  .pill.strong {
+    background: var(--accent-light);
+    border-color: oklch(75% 0.08 30);
+    color: oklch(38% 0.12 30);
+    font-weight: 500;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 2px solid var(--ink);
+    padding: 2rem clamp(1.5rem, 8vw, 6rem);
+    font-size: 0.78rem;
+    color: var(--muted);
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  /* ── SCORE BARS ── */
+  .score-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.45rem;
+    margin-top: 0.5rem;
+  }
+
+  .score-item {
+    display: grid;
+    grid-template-columns: 130px 1fr auto;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.73rem;
+  }
+
+  .score-label { color: var(--muted); }
+
+  .score-bar-bg {
+    height: 5px;
+    background: var(--rule);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .score-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    background: var(--accent);
+    transition: width 0s;
+  }
+
+  .score-val {
+    color: var(--muted);
+    font-size: 0.68rem;
+    min-width: 2ch;
+    text-align: right;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="header-eyebrow">GEIP Company Research · Personal Fit Analysis</div>
+    <h1 class="header-title">The Companies at <em>CSEA</em></h1>
+    <div style="margin-top:1rem; font-size:0.85rem; color:var(--muted); max-width:60ch;">
+      Assessed through the lens of: <em>impact orientation, tolerance for non-conventional approaches, and scale-building expectations for an early-career engineer.</em>
+    </div>
+  </div>
+  <div class="header-meta">
+    June 2026<br>
+    John Ray Loh<br>
+    Ngee Ann Polytechnic<br>
+    Engineering Science Y3
+  </div>
+</header>
+
+<div class="intro-band">
+  <p>
+    Three questions frame this analysis. First: <strong>has my prior work actually been practice for what this role demands</strong> — not just adjacent to it, but genuinely rehearsal? Second: <strong>to what extent does the role accept that skills change</strong> — that a hire is a bet on trajectory, not a completed checklist? Third: <strong>how much does the role actually require unconventional thinking and building things at scale independently</strong>? The answers sort these companies into three tiers, and the write-ups are honest about where I am a strong fit, a stretch, or a mismatch.
+  </p>
+</div>
+
+<div class="legend">
+  <span class="legend-item"><span class="dot high"></span> Strong fit — genuine prior rehearsal, domain overlap, high trajectory bet</span>
+  <span class="legend-item"><span class="dot mid"></span> Solid fit — transferable skills, some domain gap, worth applying</span>
+  <span class="legend-item"><span class="dot low"></span> Weaker fit — skills don't translate cleanly, or role unlikely to stretch you</span>
+</div>
+
+<main>
+
+  <!-- ═══════════════════════════════════════════ TIER 1 ═══ -->
+  <div class="tier">
+    <span class="tier-label">Tier 1 — Strong Fit</span>
+    <span class="tier-subtitle">prior work is genuine rehearsal, not just adjacent</span>
+  </div>
+
+  <!-- EverComm -->
+  <div class="card">
+    <div class="card-sidebar">
+      <div class="company-name">EverComm</div>
+      <span class="company-tag">CleanTech · AI</span>
+      <span class="company-tag">SG-based</span>
+      <span class="company-tag">Series B</span>
+      <div class="fit-badge"><span class="dot high"></span><span class="fit-text high">Strong Fit</span></div>
+      <div class="location">🇸🇬 Singapore (NTU-incubated)</div>
+    </div>
+    <div class="card-body">
+      <p class="company-lead">
+        An NTU-born cleantech AI company that turns energy and emissions data into decisions — winner of the COP28 UAE Tech Sprint, S$10M Series B co-led by Mitsubishi Electric, and active across APAC, Taiwan, Europe, and with the UN.
+      </p>
+
+      <div>
+        <div class="section-head">Has my prior work been rehearsal for this?</div>
+        <p>
+          More directly than almost any other company on this list. The CO₂ adsorption research you run every Friday at SUTD is not just thematically adjacent to EverComm's mission — it shares the same fundamental domain: carbon management, data-driven process analysis, and building tools to make sustainability decisions more precise. Fitting breakthrough curves, interpreting LDF mass-transfer coefficients, and presenting those findings to a policy audience at STEAMunity all map almost exactly onto what EverComm does: collect emissions data, model it rigorously, and turn the output into something actionable for enterprise and government clients. The Access fellowship energy management project — where your team built a three-month system to equip schools with best-in-class energy efficiency solutions, complete with a Gantt chart and business model — is a near-direct prototype of EverComm's B2B engagement model. When an interviewer asks "what do you know about carbon accounting?" you can answer with kinetics, not just keywords.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Does the role accept trajectory over completeness?</div>
+        <p>
+          Yes. EverComm is a 50-person startup at Series B — a stage where every hire is expected to grow into a larger role within 12–18 months, not arrive fully formed. They partner with the UN and enterprise clients, which means interns and junior engineers are expected to eventually own problems, not just complete tasks. The "tick all checkboxes" candidate here would need a background in IoT, carbon accounting standards (ISO 14064-1), ML deployment, and enterprise sales — nobody at poly level has all of that. What matters is whether you can learn the carbon accounting framework fast, bring genuine domain depth in adsorption science, and operate with the cross-functional discipline you've demonstrated in Leo Club and SAIL.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Unconventional thinking + scale-building?</div>
+        <p>
+          High on both. EverComm doesn't sell a generic SaaS; it builds site-specific models for complex industrial and commercial energy systems. The work requires people who can interrogate data in ways standard frameworks don't anticipate — which aligns with how you approached the CO₂ project (nine empirical breakthrough models, AICc comparison, Akaike weights). Their expansion into Europe and partnership with Mitsubishi Electric also means there are real-scale implementation problems to work on. Building autonomously is explicitly expected at a company this size.
+        </p>
+      </div>
+
+      <div class="section-head">Signal skills</div>
+      <div class="pill-row">
+        <span class="pill strong">CO₂ / adsorption domain</span>
+        <span class="pill strong">Python data modelling</span>
+        <span class="pill strong">energy mgmt (ACCESS project)</span>
+        <span class="pill strong">policy-audience comms</span>
+        <span class="pill">IoT basics (to acquire)</span>
+        <span class="pill">ISO 14064 (to acquire)</span>
+      </div>
+
+      <div class="score-row">
+        <div class="score-item"><span class="score-label">Domain relevance</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:92%"></div></div><span class="score-val">9/10</span></div>
+        <div class="score-item"><span class="score-label">Trajectory bet accepted</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:82%"></div></div><span class="score-val">8/10</span></div>
+        <div class="score-item"><span class="score-label">Non-norm / scale demand</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:85%"></div></div><span class="score-val">8/10</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CoLearn -->
+  <div class="card">
+    <div class="card-sidebar">
+      <div class="company-name">CoLearn</div>
+      <span class="company-tag">EdTech · AI</span>
+      <span class="company-tag">Indonesia</span>
+      <span class="company-tag">$34M raised</span>
+      <div class="fit-badge"><span class="dot high"></span><span class="fit-text high">Strong Fit</span></div>
+      <div class="location">🇮🇩 Jakarta, Indonesia</div>
+    </div>
+    <div class="card-body">
+      <p class="company-lead">
+        One of Southeast Asia's fastest-growing edtech platforms, on a mission to lift Indonesia's PISA rankings by making AI-powered STEM education accessible to 4.8 million+ students — backed by Sequoia's Surge, GSV Ventures, TNB Aura, and BINUS GROUP.
+      </p>
+
+      <div>
+        <div class="section-head">Has my prior work been rehearsal for this?</div>
+        <p>
+          In an unusually direct way. Teaching mathematics to lower-income children at TOUCH Young Arrows is not just a feel-good line on a CV — it's a worked example of the exact pedagogy challenge CoLearn is building around. Your reflection about how "the syllabus is not the engine — the story is," and how a child stuck on fractions is often stuck on whether they're the kind of person who solves fractions, is essentially the pedagogical insight that motivates AI-adaptive tutoring: the problem isn't content delivery, it's motivation and identity. Running EV3 robotics workshops at Impart, designing accessible curriculum for first-time builders, and deliberately not fixing their robots in twenty seconds — that's exactly the learning-science mindset CoLearn needs in people building its content and AI systems. Your SAIL experience in Indonesia also gives you a cultural and linguistic sensitivity that would be genuinely useful in a Jakarta office, not just diplomatic cover.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Does the role accept trajectory over completeness?</div>
+        <p>
+          Strongly. CoLearn is a growth-stage startup explicitly trying to reshape education in the world's fourth most populous country. They aren't looking for finished ML engineers — they're looking for people who think hard about learning, can build things with AI, and will grow fast inside a company that's growing fast. Your SENTINEL work (deploying AI systems on Cloud Run, multi-agent orchestration) plus your genuine grasp of pedagogy from three different volunteer contexts makes you a rare combination: someone who can sit in an engineering sprint and a curriculum design session and contribute meaningfully to both.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Unconventional thinking + scale-building?</div>
+        <p>
+          Very high. CoLearn's "Tanya" AI platform handles over 10 million questions per month — real-scale infrastructure. The unconventional angle is the pedagogical one: they're not just building a chatbot, they're trying to change how students relate to STEM subjects. That requires exactly the kind of thinking you've practised: leading with the story, not the syllabus. An intern here would likely touch both AI pipeline work and content/UX problems where your understanding of how learning actually works would matter more than pure engineering credentials.
+        </p>
+      </div>
+
+      <div class="section-head">Signal skills</div>
+      <div class="pill-row">
+        <span class="pill strong">STEM pedagogy (3 contexts)</span>
+        <span class="pill strong">Indonesia cultural context</span>
+        <span class="pill strong">AI deployment (Cloud Run)</span>
+        <span class="pill strong">curriculum design (EV3)</span>
+        <span class="pill">Bahasa Indonesia basics</span>
+        <span class="pill">EdTech product (to learn)</span>
+      </div>
+
+      <div class="score-row">
+        <div class="score-item"><span class="score-label">Domain relevance</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:88%"></div></div><span class="score-val">9/10</span></div>
+        <div class="score-item"><span class="score-label">Trajectory bet accepted</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:88%"></div></div><span class="score-val">9/10</span></div>
+        <div class="score-item"><span class="score-label">Non-norm / scale demand</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:80%"></div></div><span class="score-val">8/10</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Preface -->
+  <div class="card">
+    <div class="card-sidebar">
+      <div class="company-name">Preface</div>
+      <span class="company-tag">EdTech · AI literacy</span>
+      <span class="company-tag">Hong Kong</span>
+      <div class="fit-badge"><span class="dot high"></span><span class="fit-text high">Strong Fit</span></div>
+      <div class="location">🇭🇰 Hong Kong (GBA)</div>
+    </div>
+    <div class="card-body">
+      <p class="company-lead">
+        Hong Kong's leading AI and tech education company — using ML to personalise learner-instructor matching, running city-scale AI upskilling initiatives (AI-5000 for secondary students, the AI-Q Test), and partnering with Google, Microsoft, Meta, Standard Chartered, and Manulife.
+      </p>
+
+      <div>
+        <div class="section-head">Has my prior work been rehearsal for this?</div>
+        <p>
+          Yes, particularly from the facilitation and curriculum design angle. Preface's core product is not just code — it's the instructional experience: matching the right teacher to the right learner, designing sessions that produce "aha moments," and scaling that across a city. You've run exactly this kind of experience design across VIVITA (makerspace, self-directed learning), Impart (EV3 robotics, structured three-question facilitation), and TOUCH Young Arrows (story-first mathematics). The VIVITA section of your reflective document is almost a textbook description of Preface's pedagogical philosophy: you gave Olivia space to pivot her clay cake into a keychain, you let Zephan 3D-print his badge without stepping in, and you called yourself a "co-learner." That mindset is exactly what differentiates Preface from a conventional coding school. On the technical side, your SENTINEL work with AI pipelines and your Claude Code/Anthropic Partner Network involvement demonstrate you can contribute to the tech side too.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Does the role accept trajectory over completeness?</div>
+        <p>
+          Very much. Preface explicitly values people who can teach, facilitate, and think about technology education — not just people who can build ML systems. Their "AI-5000" initiative and the AI-Q Test show they're in aggressive growth mode across the Greater Bay Area, and an intern who brings both facilitation depth and genuine AI literacy would be unusually useful. The Hong Kong context also gives you the cross-cultural experience your portfolio highlights — you've already proved comfort navigating unfamiliar cultural and linguistic environments through SAIL in Vietnam and Indonesia.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Unconventional thinking + scale-building?</div>
+        <p>
+          Moderately high. The AI-5000 initiative (5,000 secondary students in six months) is a city-scale programme that requires unconventional thinking about delivery — you can't just run 5,000 one-on-one sessions. The instructional design, platform architecture, and matching algorithm work are all non-trivial. Building at scale independently is more of an expectation at Preface than at a pure engineering startup, but the demand is real.
+        </p>
+      </div>
+
+      <div class="section-head">Signal skills</div>
+      <div class="pill-row">
+        <span class="pill strong">facilitation depth (3 contexts)</span>
+        <span class="pill strong">AI literacy (built systems)</span>
+        <span class="pill strong">curriculum design</span>
+        <span class="pill strong">cross-cultural comfort</span>
+        <span class="pill">Cantonese/Mandarin (gap)</span>
+        <span class="pill">HK market context (to learn)</span>
+      </div>
+
+      <div class="score-row">
+        <div class="score-item"><span class="score-label">Domain relevance</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:85%"></div></div><span class="score-val">8/10</span></div>
+        <div class="score-item"><span class="score-label">Trajectory bet accepted</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:88%"></div></div><span class="score-val">9/10</span></div>
+        <div class="score-item"><span class="score-label">Non-norm / scale demand</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:72%"></div></div><span class="score-val">7/10</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- X0PA AI -->
+  <div class="card">
+    <div class="card-sidebar">
+      <div class="company-name">X0PA AI</div>
+      <span class="company-tag">AI · HRTech · SaaS</span>
+      <span class="company-tag">SG-based</span>
+      <span class="company-tag">Global</span>
+      <div class="fit-badge"><span class="dot high"></span><span class="fit-text high">Strong Fit</span></div>
+      <div class="location">🇸🇬 Singapore (+ UK, India, UAE)</div>
+    </div>
+    <div class="card-body">
+      <p class="company-lead">
+        Singapore-headquartered AI SaaS for talent acquisition — listed as Singapore's Fastest Growing Company 2026 (Straits Times), High-Growth Asia-Pacific 2025 (FT), and a Google AI Trailblazer. Runs enterprise hiring for 100,000+ job roles and 1M+ job seekers, with a freshly launched Agentic AI Suite.
+      </p>
+
+      <div>
+        <div class="section-head">Has my prior work been rehearsal for this?</div>
+        <p>
+          More than it might appear. The SENTINEL project — building a multi-agent AI pipeline for content detection and deploying it on Cloud Run with FastAPI — is structurally identical to what X0PA's Agentic AI Suite does: multiple specialist agents (Alex for screening, Kate for analytics, Zeus and Ruby for extended functions) orchestrated to process high-volume, high-stakes decisions. You've shipped this architecture. The job-hunting pipeline you built (scored applications, Gmail drafts, multi-source search) is also a direct prototype of X0PA's outbound sourcing logic. What's unusual about your fit here is that you understand the problem from both sides: you've run the technical pipeline, and you've been through enough volunteer coordination and Leo Club event management to understand why fair, bias-aware hiring decisions matter. X0PA's emphasis on "explainable AI" and ethical hiring connects to your track record of building systems that are transparent, not just accurate (cf. ContextGuard's "signal not verdict" design principle).
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Does the role accept trajectory over completeness?</div>
+        <p>
+          Yes — X0PA is in aggressive global expansion (just launched in the US West Coast) and explicitly needs engineers who can build quickly and grow. The "tick all boxes" candidate would need HR domain knowledge, ML at production scale, and enterprise sales context. You bring the engineering substrate; the domain knowledge is acquirable fast given your research instincts.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Unconventional thinking + scale-building?</div>
+        <p>
+          High on scale, medium on unconventionality. X0PA handles 100,000+ job postings and a million job seekers — that's real infrastructure at real scale. The unconventional angle is their ethical AI framework (AI VERIFY certification, DISC-based compatibility scoring) which requires thinking beyond accuracy metrics. For you, the stretch isn't the scale — it's developing the enterprise and HR intuition to know which AI decisions actually matter to the people affected by them.
+        </p>
+      </div>
+
+      <div class="section-head">Signal skills</div>
+      <div class="pill-row">
+        <span class="pill strong">multi-agent AI (SENTINEL)</span>
+        <span class="pill strong">FastAPI / Cloud Run</span>
+        <span class="pill strong">explainable AI (ContextGuard)</span>
+        <span class="pill strong">volunteer coord / fairness lens</span>
+        <span class="pill">HR domain (to acquire)</span>
+        <span class="pill">enterprise SaaS context</span>
+      </div>
+
+      <div class="score-row">
+        <div class="score-item"><span class="score-label">Domain relevance</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:82%"></div></div><span class="score-val">8/10</span></div>
+        <div class="score-item"><span class="score-label">Trajectory bet accepted</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:82%"></div></div><span class="score-val">8/10</span></div>
+        <div class="score-item"><span class="score-label">Non-norm / scale demand</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:85%"></div></div><span class="score-val">8/10</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bitscopic -->
+  <div class="card">
+    <div class="card-sidebar">
+      <div class="company-name">Bitscopic</div>
+      <span class="company-tag">Healthcare AI</span>
+      <span class="company-tag">Biosurveillance</span>
+      <span class="company-tag">US-based</span>
+      <div class="fit-badge"><span class="dot high"></span><span class="fit-text high">Strong Fit</span></div>
+      <div class="location">🇺🇸 United States</div>
+    </div>
+    <div class="card-body">
+      <p class="company-lead">
+        A US healthcare analytics company processing 9 million VA patient records through AI and ML — predicting chronic disease risk, powering biosurveillance, building clinical decision support, and publishing peer-reviewed, clinically validated tools. Former VA clinicians and engineers form the core team.
+      </p>
+
+      <div>
+        <div class="section-head">Has my prior work been rehearsal for this?</div>
+        <p>
+          The CO₂ research is the direct rehearsal — not because carbon and healthcare share subject matter, but because both demand the same rigour: you fit multiple competing empirical models, use information-theoretic model selection (AICc, Akaike weights), and document your uncertainty honestly. Bitscopic's clinical analytics work operates at exactly this level of epistemic discipline. What makes you unusually interesting for them is the Lifeline project: a 3D-printable blood sampling device with a microneedle array, check-valve manifold, and vacuum actuation — published under CC-BY-4.0, with a clinical-handling guide included. That's end-to-end medical device thinking, from materials to field use. Bitscopic is building tools for people in the same clinical reality Lifeline was designed for. Your Python data pipeline work (Fourier analysis, curve-fitting, structured models) also directly applies to their platform.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Does the role accept trajectory over completeness?</div>
+        <p>
+          The US biotech/health-tech context is generally more credential-focused than SEA startups, but Bitscopic explicitly draws from engineering and science backgrounds, not just CS. Your combination of rigorous quantitative work and the genuine healthcare design experience from Lifeline is unusual at poly level — the trajectory bet here is legitimate.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Unconventional thinking + scale-building?</div>
+        <p>
+          Very high on both. Analysing 9 million patient records requires systems designed for scale from the start. The unconventional angle is the breadth of their work: biosurveillance, pharmacogenomics, clinical decision support, and long COVID AI modelling — all simultaneously. An intern here would likely own a clearly scoped data pipeline or model evaluation task, and be expected to go deeper than anyone expected.
+        </p>
+      </div>
+
+      <div class="section-head">Signal skills</div>
+      <div class="pill-row">
+        <span class="pill strong">rigorous model fitting + AICc</span>
+        <span class="pill strong">Python (data pipelines)</span>
+        <span class="pill strong">Lifeline (medical device design)</span>
+        <span class="pill strong">peer-review-style documentation</span>
+        <span class="pill">clinical data standards (to learn)</span>
+        <span class="pill">US healthcare regulatory context</span>
+      </div>
+
+      <div class="score-row">
+        <div class="score-item"><span class="score-label">Domain relevance</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:80%"></div></div><span class="score-val">8/10</span></div>
+        <div class="score-item"><span class="score-label">Trajectory bet accepted</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:75%"></div></div><span class="score-val">7/10</span></div>
+        <div class="score-item"><span class="score-label">Non-norm / scale demand</span><div class="score-bar-bg"><div class="score-bar-fill" style="width:88%"></div></div><span class="score-val">9/10</span></div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════ TIER 2 ═══ -->
+  <div class="tier">
+    <span class="tier-label">Tier 2 — Solid Fit</span>
+    <span class="tier-subtitle">transferable skills, genuine domain gap, worth applying with the right framing</span>
+  </div>
+
+  <!-- Cialfo -->
+  <div class="card">
+    <div class="card-sidebar">
+      <div class="company-name">Cialfo</div>
+      <span class="company-tag">EdTech · College Admissions</span>
+      <span class="company-tag">SG-based</span>
+      <span class="company-tag">$77M raised</span>
+      <div class="fit-badge"><span class="dot mid"></span><span class="fit-text mid">Solid Fit</span></div>
+      <div class="location">🇸🇬 SG / 🇺🇸 DC / 🇮🇳 Delhi / 🇨🇳 Shanghai</div>
+    </div>
+    <div class="card-body">
+      <p class="company-lead">
+        A well-funded global platform (Tiger Global, Square Peg, DST Global) connecting students, counselors, and universities — aiming to make higher education accessible to 100 million students. Named Time's Top 250 EdTech 2024.
+      </p>
+
+      <div>
+        <div class="section-head">Has my prior work been rehearsal for this?</div>
+        <p>
+          Partially. Your ECG sharing at HIHS — explaining poly pathways to secondary school students — is thematically aligned with Cialfo's mission of democratising access to higher education information. The pattern you identified (students stuck not on the content but on whether they believe they belong in a certain track) is also exactly what Cialfo's counseling tools are designed to address structurally. However, Cialfo is a global SaaS product company at a relatively mature stage ($77M raised), which means the engineering work is more infrastructure-focused and less "go build something new." You'd likely be working within an established product rather than shaping it.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Does the role accept trajectory over completeness?</div>
+        <p>
+          More than a late-stage company, less than an early-stage one. Cialfo is still growing internationally and would value someone with cross-cultural agility and an ability to connect technical work to educational impact. Your Leo Club proposal-writing and structured communications discipline would be visible in a role that involves any customer-facing or cross-team work.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Unconventional thinking + scale-building?</div>
+        <p>
+          Moderate. The scale is real (global markets, thousands of schools), but the unconventional demand is lower than at earlier-stage companies. The most interesting work here would be in the AI matching and recommendation engine — which does require creative thinking about what signals predict "good fit" between student and university.
+        </p>
+      </div>
+
+      <div class="section-head">Signal skills</div>
+      <div class="pill-row">
+        <span class="pill strong">ECG / education context</span>
+        <span class="pill strong">cross-cultural communication</span>
+        <span class="pill">SaaS product engineering (gap)</span>
+        <span class="pill">college admissions domain (gap)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- AngelCentral -->
+  <div class="card">
+    <div class="card-sidebar">
+      <div class="company-name">AngelCentral</div>
+      <span class="company-tag">Angel Investing · VC</span>
+      <span class="company-tag">SG-based</span>
+      <div class="fit-badge"><span class="dot mid"></span><span class="fit-text mid">Solid Fit</span></div>
+      <div class="location">🇸🇬 Singapore / SEA</div>
+    </div>
+    <div class="card-body">
+      <p class="company-lead">
+        One of SEA's fastest-growing angel networks — organising investment workshops, curated pitch sessions, and syndication services for early-stage startups across Singapore and Southeast Asia.
+      </p>
+
+      <div>
+        <div class="section-head">Has my prior work been rehearsal for this?</div>
+        <p>
+          Surprisingly yes, if framed correctly. The Create4Good finalist journey — pitching Retractiles to a panel with the SUTD S$50k fund in sight, building the business model, identifying B2B partners (Kinetics Industries, NAKA, Eminent), and developing a commercialisation roadmap — is direct rehearsal for understanding how angel-fundable startups are structured and evaluated. You've done market validation, three-way impact Venn diagrams, and revenue model design. At AngelCentral, the value you'd add is being someone who can evaluate pitches from the perspective of someone who has been inside one, not just observed them from the outside. The HIHS ECG sharing and ACCESS energy management project also demonstrate sector breadth.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Does the role accept trajectory over completeness?</div>
+        <p>
+          Highly. AngelCentral is a lean team doing event production, deal sourcing, and investor relations. The ideal intern brings intellectual curiosity about startups, strong communication, and the ability to synthesise a lot of information quickly — none of which require a finance degree. The risk is that the role may be more operational (event logistics, CRM work) than intellectually demanding.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Unconventional thinking + scale-building?</div>
+        <p>
+          Lower on scale-building, higher on breadth. This role is more about working across many companies and deals than building something from scratch. If you want to build things, this is not the right fit. If you want to understand the funding ecosystem that powers the companies on this list, it's genuinely useful.
+        </p>
+      </div>
+
+      <div class="section-head">Signal skills</div>
+      <div class="pill-row">
+        <span class="pill strong">pitch deck experience (Create4Good)</span>
+        <span class="pill strong">business model design</span>
+        <span class="pill strong">startup ecosystem knowledge</span>
+        <span class="pill">VC/angel deal flow (to learn)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Coins.ph -->
+  <div class="card">
+    <div class="card-sidebar">
+      <div class="company-name">Coins.ph</div>
+      <span class="company-tag">FinTech · Crypto</span>
+      <span class="company-tag">Philippines</span>
+      <div class="fit-badge"><span class="dot mid"></span><span class="fit-text mid">Solid Fit</span></div>
+      <div class="location">🇵🇭 Philippines</div>
+    </div>
+    <div class="card-body">
+      <p class="company-lead">
+        A SEA fintech enabling anyone — including unbanked populations — to access financial services directly from their phone. Deep roots in financial inclusion across the Philippines.
+      </p>
+
+      <div>
+        <div class="section-head">Has my prior work been rehearsal for this?</div>
+        <p>
+          From a mission alignment perspective, your community service work — helping 500+ families save over $25,000 through Heartwarmers, and tutoring children from lower-income families at TOUCH Young Arrows — gives you a genuine conviction about financial inclusion that would come through in an interview. Technically, your full-stack AI work (SENTINEL backend, Chrome extension, Telegram bot) demonstrates you can build consumer-facing digital products. However, Coins.ph's core engineering work is more in fintech infrastructure (payments, crypto rails, compliance) than AI — which is a domain gap.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Unconventional thinking + scale-building?</div>
+        <p>
+          Fintech at Coins.ph scale in the Philippines is genuinely high-stakes and high-velocity. The unconventional angle is the financial inclusion mandate — you're not optimising for average users but for people who have never had a bank account. That's a constraint that produces genuinely non-standard product decisions. The engineering demand is real but more infrastructure-focused than AI-focused.
+        </p>
+      </div>
+
+      <div class="section-head">Signal skills</div>
+      <div class="pill-row">
+        <span class="pill strong">financial inclusion conviction</span>
+        <span class="pill strong">consumer-facing full-stack (SENTINEL)</span>
+        <span class="pill">fintech / crypto infrastructure (gap)</span>
+        <span class="pill">Philippines market (SAIL context helps)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Laika -->
+  <div class="card">
+    <div class="card-sidebar">
+      <div class="company-name">Laika</div>
+      <span class="company-tag">FoodTech · Sustainability</span>
+      <span class="company-tag">SEA</span>
+      <div class="fit-badge"><span class="dot mid"></span><span class="fit-text mid">Solid Fit</span></div>
+      <div class="location">🌏 Southeast Asia</div>
+    </div>
+    <div class="card-body">
+      <p class="company-lead">
+        A sustainable pet food startup using insect-based protein — building a case for environmentally regenerative food supply chains as an alternative to conventional animal agriculture.
+      </p>
+
+      <div>
+        <div class="section-head">Has my prior work been rehearsal for this?</div>
+        <p>
+          Partially, but in an interesting way. Your CO₂ research and ACCESS energy management project show you think seriously about sustainability as a systems problem, not a branding exercise. The Lifeline project and the materials science background demonstrate comfort with novel biomaterials and manufacturing constraints. Laika's challenge isn't cooking chemistry — it's supply chain biology (insect farming at scale), consumer adoption of unfamiliar protein sources, and distribution in SEA markets. Your SAIL experience in Indonesia and Vietnam gives you a real appreciation of how food culture and consumer behaviour differ across the region.
+        </p>
+      </div>
+
+      <div>
+        <div class="section-head">Unconventional thinking + scale-building?</div>
+        <p>
+          Very high on unconventionality — insect-based protein is still a nascent market and almost everything about how you build the supply chain, brand, and product pipeline is being invented in real time. Scale-building is present but at an earlier stage than the other companies. This is a "building the plane while flying" environment.
+        </p>
+      </div>
+
+      <div class="section-head">Signal skills</div>
+      <div class="pill-row">
+        <span class="pill strong">sustainability systems thinking</span>
+        <span class="pill strong">SEA cultural context</span>
+        <span class="pill strong">materials / biotech awareness</span>
+        <span class="pill">food science / entomology (gap)</span>
+        <span class="pill">B2C / FMCG (to learn)</span>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════ TIER 3 ═══ -->
+  <div class="tier">
+    <span class="tier-label">Tier 3 — Weaker Fit</span>
+    <span class="tier-subtitle">skills don't transfer cleanly, or role unlikely to stretch you in the right directions</span>
+  </div>
+
+  <!-- Shopee -->
+  <div class="card">
+    <div class="card-sidebar">
+      <div class="company-name">Shopee</div>
+      <span class="company-tag">E-commerce · Platform</span>
+      <span class="company-tag">SEA</span>
+      <div class="fit-badge"><span class="dot low"></span><span class="fit-text low">Weaker Fit</span></div>
+      <div class="location">🇸🇬 Singapore / 🇹🇭 Thailand</div>
+    </div>
+    <div class="card-body">
+      <p class="company-lead">
+        The leading e-commerce platform in SEA and Taiwan — a platform-at-scale play, not a startup, with deep engineering teams specialising in recommendation systems, logistics optimisation, and payments infrastructure.
+      </p>
+
+      <div>
+        <div class="section-head">The honest fit assessment</div>
+        <p>
+          Shopee is genuinely large-scale technical infrastructure — but interns here typically work in clearly scoped feature tracks within large engineering teams. The "building things at scale independently" criterion is low because you'd be a small part of a very large system. The "unconventional thinking" criterion is also lower — platform-scale e-commerce is mostly about optimisation and reliability, not first-principles design. You're also aiming for internships where the domain work connects to your longer-term trajectory (deep tech, CO₂, AI systems, sustainable engineering) — Shopee doesn't offer that. You've cited Shopee in past job-hunting pipelines, which suggests it's on your radar, but the fit is more about the brand than the work itself. Apply if you want strong engineering structure and a big-company experience, but don't anchor your expectations of building independently.
+        </p>
+      </div>
+
+      <div class="section-head">Signal skills</div>
+      <div class="pill-row">
+        <span class="pill">Python</span>
+        <span class="pill">systems thinking</span>
+        <span class="pill">e-commerce domain (gap)</span>
+        <span class="pill">large-team engineering (to learn)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tribee -->
+  <div class="card">
+    <div class="card-sidebar">
+      <div class="company-name">Tribee</div>
+      <span class="company-tag">Sales Enablement · SaaS</span>
+      <div class="fit-badge"><span class="dot low"></span><span class="fit-text low">Weaker Fit</span></div>
+      <div class="location">🌏 SEA</div>
+    </div>
+    <div class="card-body">
+      <p class="company-lead">
+        A sales performance platform helping large teams sell more — promoting behaviours proven to increase sales, enabling better customer engagement, and providing management insights.
+      </p>
+
+      <div>
+        <div class="section-head">The honest fit assessment</div>
+        <p>
+          The mission (increase sales revenue) doesn't connect to your through-line of impact, rigorous understanding, and community. This isn't a value judgment — it's a fit judgment. Your strongest work has been in domains where the technical output connects to something meaningful at the human scale: CO₂ removal, learning equity, medical access. Tribee's impact is real but abstracted through a B2B sales funnel. The engineering work is also primarily behavioural analytics and incentive system design — interesting, but not rehearsal for anything you've been building toward. Put your energy elsewhere.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recruitery -->
+  <div class="card">
+    <div class="card-sidebar">
+      <div class="company-name">Recruitery</div>
+      <span class="company-tag">HR · Talent Network</span>
+      <span class="company-tag">Vietnam</span>
+      <div class="fit-badge"><span class="dot low"></span><span class="fit-text low">Weaker Fit</span></div>
+      <div class="location">🇻🇳 Vietnam</div>
+    </div>
+    <div class="card-body">
+      <p class="company-lead">
+        A recruitment network connecting businesses with expert headhunters — focused on talent sourcing in Vietnam and broader SEA markets.
+      </p>
+
+      <div>
+        <div class="section-head">The honest fit assessment</div>
+        <p>
+          The Vietnam context is genuinely meaningful to you — your SAIL experience in Ho Chi Minh City and Ben Tre gave you a real on-the-ground understanding of the country that would differentiate you from other applicants. However, Recruitery's core work is marketplace operations and headhunting network management, not technical AI building. Compared to X0PA (which is solving a similar domain problem with cutting-edge AI engineering), Recruitery is a more manual, relationship-driven business. Unless you want to understand the HR industry from the market-making side rather than the tech side, X0PA is a better use of your application effort.
+        </p>
+      </div>
+
+      <div class="section-head">Signal skills</div>
+      <div class="pill-row">
+        <span class="pill strong">Vietnam cultural context (SAIL)</span>
+        <span class="pill">HR domain (gap)</span>
+        <span class="pill">marketplace ops (gap)</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Kopi Kenangan -->
+  <div class="card">
+    <div class="card-sidebar">
+      <div class="company-name">Kopi Kenangan</div>
+      <span class="company-tag">F&B · Tech-enabled</span>
+      <span class="company-tag">Indonesia</span>
+      <div class="fit-badge"><span class="dot low"></span><span class="fit-text low">Weaker Fit</span></div>
+      <div class="location">🇮🇩 26 cities, Indonesia</div>
+    </div>
+    <div class="card-body">
+      <p class="company-lead">
+        A tech-enabled Indonesian coffee chain with 400+ locations across 26 cities — using data to optimise operations, menu, and supply chain.
+      </p>
+
+      <div>
+        <div class="section-head">The honest fit assessment</div>
+        <p>
+          You ran a Vietnamese coffee booth at NP SEA Unbound and you have genuine SAIL context in Indonesia — so the cultural resonance is real. The irony is that your strongest asset here (domain knowledge of how coffee culture works in SEA) is also your weakest connector to the engineering work they need. Kopi Kenangan is interesting as an operations-and-data role, but the technical problems are relatively conventional (demand forecasting, outlet analytics, supply chain). The unconventional thinking and independent scale-building criteria are met only if you end up on a small tech sub-team solving a novel problem — which is not guaranteed. File this in the "interesting but low-priority" category.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bipolar Buddy -->
+  <div class="card">
+    <div class="card-sidebar">
+      <div class="company-name">Bipolar Buddy</div>
+      <span class="company-tag">MentalHealth · Mobile</span>
+      <span class="company-tag">UK</span>
+      <div class="fit-badge"><span class="dot low"></span><span class="fit-text low">Weaker Fit</span></div>
+      <div class="location">🇬🇧 United Kingdom</div>
+    </div>
+    <div class="card-body">
+      <p class="company-lead">
+        A UK-based mobile app helping people with bipolar disorder track moods, identify triggers, and recognise patterns.
+      </p>
+
+      <div>
+        <div class="section-head">The honest fit assessment</div>
+        <p>
+          The mission — helping people navigate mental health through pattern recognition — is genuinely aligned with your care for community wellbeing. But mental health app development is a highly constrained domain: clinical governance, data privacy (GDPR), and regulatory oversight mean the engineering work is more careful than creative. The unconventional thinking and scale-building criteria are lower here because the product is intentionally limited in scope (mood tracking, not population-scale intervention). Unless you're specifically interested in digital therapeutics as a career direction, your engineering skills are better deployed elsewhere.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary table -->
+  <div style="margin-top:5rem; padding-top:2rem; border-top:2px solid var(--ink);">
+    <div style="font-family:'Playfair Display',serif; font-size:1.4rem; font-weight:700; margin-bottom:1.5rem;">
+      Priority Stack
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:1.5rem;">
+      <div style="background:oklch(96% 0.02 145); border:1px solid oklch(82% 0.06 145); border-radius:4px; padding:1.2rem;">
+        <div style="font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--s-fit-high); margin-bottom:0.75rem; font-weight:500;">Apply First</div>
+        <div style="font-size:0.85rem; line-height:2;">
+          EverComm<br>
+          CoLearn<br>
+          Preface<br>
+          X0PA AI<br>
+          Bitscopic
+        </div>
+      </div>
+      <div style="background:oklch(96% 0.02 55); border:1px solid oklch(85% 0.06 55); border-radius:4px; padding:1.2rem;">
+        <div style="font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--s-fit-mid); margin-bottom:0.75rem; font-weight:500;">Apply With Right Framing</div>
+        <div style="font-size:0.85rem; line-height:2;">
+          Cialfo<br>
+          AngelCentral<br>
+          Coins.ph<br>
+          Laika
+        </div>
+      </div>
+      <div style="background:oklch(96% 0.01 250); border:1px solid oklch(85% 0.02 250); border-radius:4px; padding:1.2rem;">
+        <div style="font-size:0.65rem; letter-spacing:0.12em; text-transform:uppercase; color:var(--s-fit-low); margin-bottom:0.75rem; font-weight:500;">Lower Priority</div>
+        <div style="font-size:0.85rem; line-height:2;">
+          Shopee<br>
+          Tribee<br>
+          Recruitery<br>
+          Kopi Kenangan<br>
+          Bipolar Buddy
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Interview coaching note -->
+  <div style="margin-top:4rem; background:var(--accent-light); border:1px solid oklch(75% 0.08 30); border-radius:4px; padding:2rem;">
+    <div style="font-family:'Playfair Display',serif; font-size:1rem; font-weight:700; margin-bottom:1rem;">
+      A note from your interview feedback
+    </div>
+    <p style="font-size:0.85rem; line-height:1.85; color:oklch(28% 0.04 30);">
+      Your mock session feedback flagged three things worth carrying into every one of these applications. First, <strong>lead with the implication, not the apparatus</strong> — don't open with "I built SENTINEL on Cloud Run," open with "I built a system to help multilingual communities assess information credibility in real time, and I deployed it to production." The apparatus comes second. Second, <strong>you say too many things</strong> — the feedback suggested keeping to three points that match the job description, not a portfolio dump. Third, <strong>say something they'll remember you by</strong> — not just skills, but the tension: "I've tutored lower-income kids in maths and I've built multi-agent AI systems. The reason I care about both is the same: the gap between what people are capable of and what their circumstances let them access." That's the sentence that makes a hiring manager say your name in the debrief.
+    </p>
+  </div>
+
+</main>
+
+<footer>
+  <span>GEIP Company Analysis — John Ray Loh, June 2026</span>
+  <span>Source: csea.edu.sg/companies + primary research</span>
+</footer>
+
+</body>
+</html>
